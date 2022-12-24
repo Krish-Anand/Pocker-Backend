@@ -7,11 +7,12 @@ const registerController = async(req, res) => {
 
     // Lets validate the data before the users
     const { error } = registerValidation(req.body);
-    console.log(error, req.body)
     if (error) return res.status(400).send(error.details[0].message);
 
-    // Check for existing emails in user collections
-    const emailExits = await User.findOne({ Email: req.body.Email })
+    // Check for existing user emails in user collections
+    const emailExits = await User.findOne({ Email: req.body.Email, Type: req.body.Type }).then(async(typeWithEmail) => {
+        return await typeWithEmail
+    })
     if (emailExits) return res.status(400).send('Email Already Exits')
 
     // Hashing the password from userdetails
@@ -44,8 +45,13 @@ const loginController = async(req, res) => {
     const validPass = await bycrypt.compare(req.body.Password, user.Password)
     if (!validPass) return res.status(400).send('Password are incorrect')
 
-    const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
-    res.header('auth-token', token).send({access_token: token, status: 'login successfully'});
+    if(user['Type'] === 'admin') {
+        const token = jwt.sign({ _id: user._id }, process.env.ADMIN_TOKEN_SECRET);
+        res.header('auth-admin-token', token).send({access_token: token, status: 'admin login successfully'});
+    } else {
+        const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
+        res.header('auth-token', token).send({access_token: token, status: 'login successfully'});
+    } 
 
 }
 

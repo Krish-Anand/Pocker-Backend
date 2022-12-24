@@ -1,20 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const productControllerReference = require('../controllers/productController');
+const authValidation = require('../helpers/tokenValidation')
 
 // Get all the list which belongs to post collection
-router.get('/productsList', productControllerReference.productList)
+router.get('/productsList', authValidation.authAdminLoginValidation, productControllerReference.productList)
 
 // Add the post as new to post collection
-router.post('/productsList', productControllerReference.productAdd)
+router.post('/productsList', authValidation.authAdminLoginValidation, productControllerReference.productAdd)
 
 // Get actually what you need as specific post
-router.get('/productsList/:productId', productControllerReference.oneProductDetails)
+router.get('/productsList/:productId', authValidation.authAdminLoginValidation, productControllerReference.oneProductDetails)
 
 // Delete the exact post
-router.delete('/productsList/:productId', productControllerReference.productDelete)
+router.delete('/productsList/:productId', authValidation.authAdminLoginValidation, productControllerReference.productDelete)
 
 // Updating the post using ID
-router.patch('/productsList/:productId', productControllerReference.productUpdate)
+router.patch('/productsList/:productId', authValidation.authAdminLoginValidation, productControllerReference.productUpdate)
 
 module.exports = router;

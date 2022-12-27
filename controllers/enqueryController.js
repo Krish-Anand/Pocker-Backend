@@ -1,5 +1,5 @@
 const Enqueries = require('../models/enqueryModel');
-const Products = require('../models/productModel')
+const Products = require('../models/productModel');
 
 const enqueryList = async(req, res) => {
     try {

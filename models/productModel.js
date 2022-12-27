@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const productSchema = mongoose.Schema({
+    SeriesThumbnail: {
+        type: String,
+        unique: true
+    },
     ProductName: {
         type: String,
         required: true,
@@ -13,6 +17,10 @@ const productSchema = mongoose.Schema({
     Enqueries: [
        { type: mongoose.Schema.Types.ObjectId, ref:'Enquery' }
     ],
+    ProductImages: [{
+        type: String,
+        unique: true
+    }],
     CreatedDateTime: {
         type: Date,
         default: Date.now

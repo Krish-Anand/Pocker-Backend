@@ -15,8 +15,10 @@ const productAdd = async(req, res) => {
     if (productExits) return res.status(400).send('Product Already Exits')
 
     const product = new Products({
+        SeriesThumbnail: req.body.SeriesThumbnail,
         ProductName: req.body.ProductName,
-        ProductDescription: req.body.ProductDescription
+        ProductDescription: req.body.ProductDescription,
+        ProductImages: req.body.ProductImages
     })
     try {
         const products = await product.save();
@@ -37,8 +39,8 @@ const oneProductDetails = async(req, res) => {
 
 const productDelete = async(req, res) => {
     try {
-        const Products = await Products.deleteOne({ _id: req.params.productId })
-        res.send(Products)
+        const products = await Products.findOneAndDelete({ _id: req.params.productId })
+        res.send(products)
     } catch (err) {
         res.json({ message: err })
     }

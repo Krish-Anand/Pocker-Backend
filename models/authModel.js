@@ -11,6 +11,9 @@ const authSchema = mongoose.Schema({
         type: String,
         required: false
     },
+    RegisterType: {
+        type: String
+    },
     Password: {
         type: String,
         required: true,

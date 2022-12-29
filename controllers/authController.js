@@ -22,11 +22,17 @@ const registerController = async(req, res) => {
     const user = new User({
         Email: req.body.Email,
         Type: req.body.Type,
-        Password: hashedPassword
+        Password: hashedPassword,
+        RegisterType: req.body.RegisterType
     })
     try {
         const savedDetails = await user.save();
-        res.send({results:savedDetails, status: 'success'});
+        if(user['Type'] === 'user') {
+            const token = jwt.sign({ _id: savedDetails._id }, process.env.TOKEN_SECRET);
+            res.header('auth-token', token).send({access_token: token, results: savedDetails,  status: 'register successfully'});
+        } else {
+            res.send({results:savedDetails, status: 'success'});
+        } 
     } catch (err) {
         res.json({ message: err, status: err.status })
     }
@@ -45,13 +51,10 @@ const loginController = async(req, res) => {
     const validPass = await bycrypt.compare(req.body.Password, user.Password)
     if (!validPass) return res.status(400).send('Password are incorrect')
 
-    if(user['Type'] === 'admin') {
-        const token = jwt.sign({ _id: user._id }, process.env.ADMIN_TOKEN_SECRET);
-        res.header('auth-admin-token', token).send({access_token: token, status: 'admin login successfully'});
-    } else {
+  
         const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
-        res.header('auth-token', token).send({access_token: token, status: 'login successfully'});
-    } 
+        res.header('auth-token', token).send({access_token: token, results: user, status: 'login successfully'});
+    
 
 }
 

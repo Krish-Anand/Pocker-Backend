@@ -58,4 +58,29 @@ const loginController = async(req, res) => {
 
 }
 
-module.exports = { loginController, registerController }
+const guestController = async(req,res) => {
+     // Checking the username and password validation here
+     const { error } = loginValidation(req.body)
+     if (error) return res.status(400).send(error.details[0].message);
+
+     const user = await User.findOne({ Email: req.body.Email })
+     if (!user) {
+        const salt = await bycrypt.genSalt(10)
+        const hashedPassword = await bycrypt.hash(req.body.Password, salt)
+        const userDetails = new User({
+            Email: req.body.Email,
+            Password: hashedPassword
+        })
+        const savedDetails = await userDetails.save();
+        const token = jwt.sign({ _id: savedDetails._id }, process.env.TOKEN_SECRET);
+        res.header('auth-token', token).send({access_token: token, results: savedDetails,  status: 'register successfully'});
+     } else {
+        const validPass = await bycrypt.compare(req.body.Password, user.Password)
+        if (!validPass) return res.status(400).send('Password are incorrect')
+
+        const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
+        res.header('auth-token', token).send({access_token: token, results: user, status: 'login successfully'});
+     }
+}
+
+module.exports = { loginController, registerController, guestController }

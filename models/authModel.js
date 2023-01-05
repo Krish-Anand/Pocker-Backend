@@ -3,22 +3,23 @@ const mongoose = require('mongoose');
 const authSchema = mongoose.Schema({
     Email: {
         type: String,
-        required: true,
         min: 6,
         max: 256
     },
     Type: {
         type: String,
-        required: false
+        require: true
     },
     RegisterType: {
         type: String
     },
     Password: {
         type: String,
-        required: true,
         min: 6,
         max: 256
+    },
+    GuestId: {
+        type: String
     },
     date: {
         type: Date,

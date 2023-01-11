@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 
 const productSchema = mongoose.Schema({
     SeriesThumbnail: {
-        type: String,
-        unique: true
+        type: String
     },
     ProductName: {
         type: String,
@@ -18,8 +17,7 @@ const productSchema = mongoose.Schema({
        { type: mongoose.Schema.Types.ObjectId, ref:'Enquery' }
     ],
     ProductImages: [{
-        type: String,
-        unique: true
+        type: String
     }],
     CreatedDateTime: {
         type: Date,
